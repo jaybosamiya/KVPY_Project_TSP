@@ -6,6 +6,7 @@
 struct OptimalPath {
 	int location[MAXV];
 	int V;
+	int length;
 };
 
 #endif

@@ -21,11 +21,7 @@ namespace TSPSolve {
 		bool visited[MAXV]; // visited means inward path is not acceptable
 		int tourLength;
 
-		bool operator < (Node n) { // reversed comparison to make priority_heap min_heap
-			if ( tourLength < n.tourLength ) return false;
-			if ( tourLength == n.tourLength && path.length() > n.path.length() ) return false;
-			return true;
-		}
+		friend bool operator < (const Node &n1, const Node &n2);
 
 		Node() {
 			visited[0] = true;
@@ -37,7 +33,7 @@ namespace TSPSolve {
 
 		void computeTourLength() {
 			tourLength = 0;
-			for ( int i = 1 ; i < path.length() ; i++ ) {
+			for ( int i = 1 ; i < path.size() ; i++ ) {
 				tourLength += state.weight[path[i-1]][path[i]];
 			}
 			for ( int i = 0 ; i < state.V ; i++ ) {
@@ -51,6 +47,12 @@ namespace TSPSolve {
 			}
 		}
 	};
+	
+	bool operator < (const Node &n1, const Node &n2) { // reversed comparison to make priority_heap min_heap
+		if ( n1.tourLength < n2.tourLength ) return false;
+		if ( n1.tourLength == n2.tourLength && n1.path.size() > n2.path.size() ) return false;
+		return true;
+	}
 
 	void tspSolve(Graph graph, OptimalPath &optimalPath) {
 		priority_queue<Node> validStates;
@@ -61,7 +63,7 @@ namespace TSPSolve {
 
 		bestLength = INFINITY;
 
-		while(!valid.empty()) {
+		while(!validStates.empty()) {
 			node = validStates.top();
 			validStates.pop();
 
@@ -71,14 +73,14 @@ namespace TSPSolve {
 			}
 
 			// Found a new good path                                   // NOTE: Is this necessary?
-			if ( node.path.length() == node.state.V + 1 ) {
+			if ( node.path.size() == node.state.V + 1 ) {
 				bestLength = node.tourLength;
 				bestPath = node.path;
 				continue;
 			}
 
 			// Separately need to complete the tour (because, otherwise, premature completion may occur
-			if ( node.path.length() == node.state.V ) {
+			if ( node.path.size() == node.state.V ) {
 				Node completeTour = node;
 				completeTour.path.push_back(0);
 				completeTour.computeTourLength();
@@ -86,17 +88,33 @@ namespace TSPSolve {
 					continue;
 				}
 				bestLength = completeTour.tourLength;
-				bestPath = complteTour.path;
+				bestPath = completeTour.path;
 				continue;
 			}
 
 			// Generate new states
 			for ( int i = 0 ; i < node.state.V ; i++ ) {
 				if ( !node.visited[i] ) {
-// ?!?!?!?
+					Node branchState = node;
+					branchState.path.push_back(i);
+					branchState.visited[i] = true;
+					branchState.computeTourLength();
+					if ( branchState.tourLength >= bestLength ) {
+						continue;
+					}
+					validStates.push(branchState);
 				}
 			}
 		}
+		
+		// May have TODO
+		
+			
+		for ( int i = 0 ; i < bestPath.size() ; i++ ) {
+			optimalPath.location[i] = bestPath[i];
+		}
+		optimalPath.V = graph.V;
+		optimalPath.length = bestLength;
 	}
 };
 

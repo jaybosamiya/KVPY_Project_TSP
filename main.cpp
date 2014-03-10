@@ -81,6 +81,8 @@ int main(int argc, char **argv) {
 	for ( int i = 0 ; i < optimalPath.V ; i++ ) {
 		std::cout << optimalPath.location[i] << " ";
 	}
+	std::cout << optimalPath.location[0] << "\n\t\tgives a length of "
+	          << optimalPath.length << "\n";
 
 	// Display run info
 
