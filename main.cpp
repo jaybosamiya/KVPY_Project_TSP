@@ -1,3 +1,41 @@
+/*
+
+KVPY Summer Project 2013
+
+Copyright 2013 Jay H. Bosamiya
+
+*/
+
+/*
+
+Miniproject 8 - Optimal Solution to TSP using Branch and Bound
+
+You have studied the branch and bound technique for finding an optimal solution to
+the travelling salesman problem. Generate a complete graph with n vertices and random
+costs for all the edges. Let the costs be positive integers uniformly distributed between
+1 and 100. For the above graph, compute an optimal Hamiltonian tour using the branch
+and bound technique. Do not under-estimate the effort involved in this project.
+
+*/
+
+/*
+
+Solution
+Use priority queue to maintain the best solution to branch at the moment
+
+*/
+
+/*
+
+Usage:
+
+main [Number of cities] [RNG seed]
+
+Number of cities - Default taken as 4 (-1 to prompt)
+RNG Seed - Seed for random number generator ( -1 for inputting all values for distances, -2 for taking all distances as 1 )
+
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
@@ -21,6 +59,10 @@ int main(int argc, char **argv) {
     unsigned int seed = 1;
 
     // Generate graph
+    if ( argc == 1 ) {
+		std::cout << "Using default parameters. Setting cities to 4 and using random RNG seed.\n"
+		             "Pass parameters to executable to do otherwise.\n\n";
+	}
     if ( argc >= 4 ) {
         std::cerr << "Incorrect number of parameters. 0 or 2 or 3 expected. ";
         return E2BIG; // Argument list too big error
@@ -28,7 +70,9 @@ int main(int argc, char **argv) {
     if ( argc >= 2 ) {
         V = atoi(argv[1]);
         if ( V == -1 ) {
+			std::cout << "Enter number of cities: ";
             std::cin >> V;
+            std::cout << std::endl;
         }
         if ( V == 0 ) {
             std::cerr << "Incorrect parameter: " << argv[1] << ". Size of graph expected. ";
