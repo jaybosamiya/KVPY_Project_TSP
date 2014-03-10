@@ -23,6 +23,9 @@ int main(int argc, char **argv) {
 			return 0; // shouldn't it return an error code?????
 		}
 		V = atoi(argv[1]);
+		if ( V == -1 ) {
+			std::cin >> V;
+		}
 		if ( V == 0 ) {
 			std::cerr << "Incorrect parameter: " << argv[1] << ". Size of graph expected. ";
 			return 0; // shouldn't it return an error code?????
@@ -67,7 +70,7 @@ int main(int argc, char **argv) {
 		for ( int i = 0 ; i < V ; i++ ) {
 			graph.weight[i][i] = INFINITY;
 			for ( int j = i+1 ; j < V ; j++ ) {
-				std::cout << std::setw(4) << i << "  " << std::setw(4) << j << "   " << "   ";
+				std::cout << std::setw(4) << i+OFFSET << "  " << std::setw(4) << j+OFFSET << "   " << "   ";
 				int cost;
 				std::cin >> cost;
 				graph.weight[i][j] = cost;
@@ -83,7 +86,7 @@ int main(int argc, char **argv) {
 				graph.weight[i][j] = randomCost;
 				graph.weight[j][i] = randomCost;
 				#ifdef SHOWCOSTS
-				std::cout << std::setw(4) << i << "  " << std::setw(4) << j << "   " << std::setw(5) << randomCost << "\n";
+				std::cout << std::setw(4) << i+OFFSET << "  " << std::setw(4) << j+OFFSET << "   " << std::setw(5) << randomCost << "\n";
 				#endif
 			}
 		}
@@ -97,9 +100,9 @@ int main(int argc, char **argv) {
 	std::cout << "\n\n"
 	          << "Optimal TSP path:\n\t";
 	for ( int i = 0 ; i < optimalPath.V ; i++ ) {
-		std::cout << optimalPath.location[i] << " ";
+		std::cout << optimalPath.location[i]+OFFSET << " ";
 	}
-	std::cout << optimalPath.location[0] << "\n\t\tgives a length of "
+	std::cout << optimalPath.location[0]+OFFSET << "\n\t\tgives a length of "
 	          << optimalPath.length << "\n";
 
 
