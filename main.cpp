@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
+#include <cerrno>
 
 #include "constants.h"
 #include "Graph.h"
@@ -20,18 +21,18 @@ int main(int argc, char **argv) {
 	unsigned int seed = 1;
 
 	// Generate graph
+	if ( argc >= 4 ) {
+		std::cerr << "Incorrect number of parameters. 0 or 2 or 3 expected. ";
+		return E2BIG; // Argument list too big error
+	}
 	if ( argc >= 2 ) {
-		if ( argc >= 4 ) {
-			std::cerr << "Incorrect number of parameters. 0 or 2 or 3 expected. ";
-			return 0; // shouldn't it return an error code?????
-		}
 		V = atoi(argv[1]);
 		if ( V == -1 ) {
 			std::cin >> V;
 		}
 		if ( V == 0 ) {
 			std::cerr << "Incorrect parameter: " << argv[1] << ". Size of graph expected. ";
-			return 0; // shouldn't it return an error code?????
+			return EINVAL; // Invalid parameter error
 		}
 		if ( argc == 3 ) {
 			seed = atoi(argv[2]);
@@ -60,11 +61,11 @@ int main(int argc, char **argv) {
 	}
 	if ( V > MAXV ) {
 			std::cerr << "Error: Too many cities.";
-			return 0; // shouldn't it return an error code?????
+			return ERANGE; // Out of range error
 	}
 	if ( V <= 2 ) { // because it doesn't make sense for a TSP path to exist for less than 3 cities
 			std::cerr << "Error: Too few cities.";
-			return 0; // shouldn't it return an error code?????
+			return EDOM; // Domain of function error
 	}
 	srand(seed);
 	graph.V = V;
