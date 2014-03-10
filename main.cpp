@@ -4,27 +4,14 @@
 #include <ctime>
 #include <algorithm>
 
-#define DEBUG 1
-
-#define SHOWCOSTS
-
-const int MAXV = 10; // to change
-const int DEFAULTV = 10; // to change
-const int MAXCOST = 100;
-
-struct Graph {
-	int weight[MAXV][MAXV];
-	int V;
-} graph;
-
-struct OptimalPath {
-	int location[MAXV];
-	int V;
-} optimalPath;
-
-void tspSolve(Graph graph, OptimalPath &optimalPath);
+#include "constants.h"
+#include "Graph.h"
+#include "OptimalPath.h"
+#include "tspSolve.h"
 
 int main(int argc, char **argv) {
+	Graph graph;
+	OptimalPath optimalPath;
 	int V = DEFAULTV;
 	unsigned int seed = 1;
 
@@ -41,11 +28,22 @@ int main(int argc, char **argv) {
 		}
 		if ( argc == 3 ) {
 			seed = atoi(argv[2]);
-		} else {
-			#ifndef DEBUG
-			seed = time(NULL);
-			#endif
 		}
+	}
+	if ( argc != 3 ) {
+		#ifndef DEBUG
+		// cause a randomization in the seed based on time.
+		// 10009 and 10007 because they are primes.
+		seed = (time(NULL) % 10009);
+		seed *= seed;
+		seed %= 10009;
+		seed *= seed;
+		seed %= 10007;
+		seed *= seed;
+		seed %= 10009;
+		srand(seed);
+		seed = rand() % 10009;
+		#endif
 	}
 	if ( V > MAXV ) {
 			std::cerr << "Error: Too many cities.";
@@ -77,7 +75,7 @@ int main(int argc, char **argv) {
 	tspSolve(graph,optimalPath);
 
 	// Display solution
-	std::cout << "\n\n" 
+	std::cout << "\n\n"
 	          << "Optimal TSP path:\n\t";
 	for ( int i = 0 ; i < optimalPath.V ; i++ ) {
 		std::cout << optimalPath.location[i] << " ";
@@ -87,14 +85,4 @@ int main(int argc, char **argv) {
 
 	std::cout << "\n\nRun same test case again using: \n\"" << argv[0] << "\" " << V << " " << seed << "\n";
 
-}
-
-void tspSolve(Graph graph, OptimalPath &optimalPath) {
-	// TODO: Remove garbage code and rewrite
-
-	// Garbage Code
-	optimalPath.V = graph.V;
-	for ( int i = 0 ; i < graph.V ; i++ ) {
-		optimalPath.location[i] = i;
-	}
 }
