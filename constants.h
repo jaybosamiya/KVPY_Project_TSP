@@ -7,6 +7,6 @@
 const int MAXV = 10; // to change
 const int DEFAULTV = 10; // to change
 const int MAXCOST = 100;
-const int INFINITY = 2147483647;
+const int INFINITY = 2000000000; // adjusted to prevent overflow to negative
 
 #endif
