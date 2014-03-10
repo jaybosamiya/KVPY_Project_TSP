@@ -4,9 +4,9 @@
 #define FILE_OPTIMALPATH_H
 
 struct OptimalPath {
-	int location[MAXV];
-	int V;
-	int length;
+    int location[MAXV];
+    int V;
+    int length;
 };
 
 #endif

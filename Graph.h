@@ -4,8 +4,8 @@
 #define FILE_GRAPH_H
 
 struct Graph {
-	int weight[MAXV][MAXV];
-	int V;
+    int weight[MAXV][MAXV];
+    int V;
 };
 
 #endif
