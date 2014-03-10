@@ -10,12 +10,13 @@
 #include "tspSolve.h"
 
 int main(int argc, char **argv) {
-	int startTime = time(NULL);
+	int startTime;
 	int endTime;
 	Graph graph;
 	OptimalPath optimalPath;
 	int V = DEFAULTV;
 	bool manualInput = 0;
+	bool uniformInput = 0;
 	unsigned int seed = 1;
 
 	// Generate graph
@@ -36,6 +37,9 @@ int main(int argc, char **argv) {
 			seed = atoi(argv[2]);
 			if ( seed == -1 ) {
 				manualInput = true;
+			}
+			if ( seed == -2 ) {
+				uniformInput = true;
 			}
 		}
 	}
@@ -84,7 +88,8 @@ int main(int argc, char **argv) {
 		for ( int i = 0 ; i < V ; i++ ) {
 			graph.weight[i][i] = INFINITY;
 			for ( int j = i+1 ; j < V ; j++ ) {
-				int randomCost = (rand() % MAXCOST) + 1;
+				int randomCost = 1;
+				if (!uniformInput) randomCost = (rand() % MAXCOST) + 1;
 				graph.weight[i][j] = randomCost;
 				graph.weight[j][i] = randomCost;
 				#ifdef SHOWCOSTS
@@ -95,6 +100,8 @@ int main(int argc, char **argv) {
 	}
 
 	// Call solver
+
+	startTime = time(NULL);
 
 	tspSolve(graph,optimalPath);
 

@@ -16,18 +16,16 @@ namespace TSPSolve {
 	vector<int> bestPath;
 	int bestLength = INFINITY;
 
-	int closestVertex[MAXV][MAXV];
+	int closestDistance[MAXV];
 
-	void generateClosestVertex() {
-		pair<int,int> distances[MAXV];
+	void generateClosestDistance() {
+		int distance;
 		for ( int i = 0 ; i < graph.V ; i++ ) {
+			distance = INFINITY;
 			for ( int j = 0 ; j < graph.V ; j++ ) {
-				distances[j] = make_pair(graph.weight[i][j],j);
+				distance =  min(distance,graph.weight[i][j]);
 			}
-			sort(distances,distances+graph.V);
-			for ( int j = 0 ; j < graph.V ; j++ ) {
-				closestVertex[i][j] = distances[j].second;
-			}
+			closestDistance[i] = distance;
 		}
 	}
 
@@ -51,26 +49,10 @@ namespace TSPSolve {
 			for ( int i = 1 ; i < path.size() ; i++ ) {
 				tourLength += graph.weight[path[i-1]][path[i]];
 			}
-			
-			// Have to test this commented section
-			
-			/*
+
 			for ( int i = 0 ; i < graph.V ; i++ ) {
 				if ( !visited[i] ) {
-					int shortest;
-					int j;
-					for ( j = 0 ; j < graph.V && visited[closestVertex[i][j]] ; j++ ) {}
-					shortest = graph.weight[i][closestVertex[i][j]];
-					tourLength += shortest;
-				}
-			}
-			*/
-			
-			// Workaround the commented section
-			
-			for ( int i = 0 ; i < graph.V ; i++ ) {
-				if ( !visited[i] ) {
-					tourLength += graph.weight[i][closestVertex[i][0]];
+					tourLength += closestDistance[i];
 				}
 			}
 		}
@@ -84,7 +66,7 @@ namespace TSPSolve {
 
 	void tspSolve(Graph graph, OptimalPath &optimalPath) {
 		TSPSolve::graph = graph;
-		generateClosestVertex();
+		generateClosestDistance();
 		priority_queue<Node> validStates;
 		Node node;
 		node.computeTourLength();
