@@ -1,3 +1,0 @@
-Cleanup Code
-
-Remove throwing the graph into node

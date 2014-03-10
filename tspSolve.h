@@ -16,28 +16,28 @@ namespace TSPSolve {
 	vector<int> bestPath;
 	int bestLength = INFINITY;
 
-	int closestDistance[MAXV];
+	int closest[MAXV];
 
-	void generateClosestDistance() {
+	void findClosest() {
 		int distance;
 		for ( int i = 0 ; i < graph.V ; i++ ) {
 			distance = INFINITY;
 			for ( int j = 0 ; j < graph.V ; j++ ) {
 				distance =  min(distance,graph.weight[i][j]);
 			}
-			closestDistance[i] = distance;
+			closest[i] = distance;
 		}
 	}
 
 	struct Node {
 		vector<int> path;
-		bool visited[MAXV]; // visited outward path exists from that vertex
+		bool visited[MAXV]; // visited := outward path is fixed from that vertex
 		int tourLength;
 
-		friend bool operator < (const Node &n1, const Node &n2);
+		friend bool operator < (const Node &n1, const Node &n2);	// to handle ordering in priority_queue
 
 		Node() {
-			visited[0] = true;
+			visited[0] = true;	// is this necessary? Write reason
 			for ( int i = 1 ; i < MAXV ; i++ ) {
 				visited[i] = false;
 			}
@@ -52,13 +52,14 @@ namespace TSPSolve {
 
 			for ( int i = 0 ; i < graph.V ; i++ ) {
 				if ( !visited[i] ) {
-					tourLength += closestDistance[i];
+					tourLength += closest[i];
 				}
 			}
 		}
 	};
 
-	bool operator < (const Node &n1, const Node &n2) { // reversed comparison to make priority_heap min_heap
+	bool operator < (const Node &n1, const Node &n2) { 
+		// reversed comparison to make priority_heap into a min heap
 		if ( n1.tourLength < n2.tourLength ) return false;
 		if ( n1.tourLength == n2.tourLength && n1.path.size() > n2.path.size() ) return false;
 		return true;
@@ -66,7 +67,7 @@ namespace TSPSolve {
 
 	void tspSolve(Graph graph, OptimalPath &optimalPath) {
 		TSPSolve::graph = graph;
-		generateClosestDistance();
+		findClosest();
 		priority_queue<Node> validStates;
 		Node node;
 		node.computeTourLength();
@@ -83,14 +84,7 @@ namespace TSPSolve {
 				continue;
 			}
 
-			// Found a new good path                                   // NOTE: Is this necessary?
-			if ( node.path.size() == graph.V + 1 ) {
-				bestLength = node.tourLength;
-				bestPath = node.path;
-				continue;
-			}
-
-			// Separately need to complete the tour (because, otherwise, premature completion may occur
+			// Separately need to complete the tour (prevent premature completion at any other stage)
 			if ( node.path.size() == graph.V ) {
 				Node completeTour = node;
 				completeTour.path.push_back(0);
@@ -117,9 +111,6 @@ namespace TSPSolve {
 				}
 			}
 		}
-
-		// May have TODO
-
 
 		for ( int i = 0 ; i < bestPath.size() ; i++ ) {
 			optimalPath.location[i] = bestPath[i];

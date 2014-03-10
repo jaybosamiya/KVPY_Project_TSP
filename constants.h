@@ -1,7 +1,7 @@
 #ifndef FILE_CONSTANTS_H
 #define FILE_CONSTANTS_H
 
-#define DEBUG 1
+//#define DEBUG 1
 #define SHOWCOSTS
 
 const int MAXV = 100; // to change
