@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
 	Graph graph;
 	OptimalPath optimalPath;
 	int V = DEFAULTV;
+	bool manualInput = 0;
 	unsigned int seed = 1;
 
 	// Generate graph
@@ -28,6 +29,9 @@ int main(int argc, char **argv) {
 		}
 		if ( argc == 3 ) {
 			seed = atoi(argv[2]);
+			if ( seed == -1 ) {
+				manualInput = true;
+			}
 		}
 	}
 	if ( argc != 3 ) {
@@ -59,15 +63,29 @@ int main(int argc, char **argv) {
 	std::cout << "    Cities     Cost\n"
 	          << "-------------- ----\n\n";
 	#endif
-	for ( int i = 0 ; i < V ; i++ ) {
-		graph.weight[i][i] = INFINITY;
-		for ( int j = i+1 ; j < V ; j++ ) {
-			int randomCost = (rand() % MAXCOST) + 1;
-			graph.weight[i][j] = randomCost;
-			graph.weight[j][i] = randomCost;
-			#ifdef SHOWCOSTS
-			std::cout << std::setw(4) << i << "  " << std::setw(4) << j << "   " << std::setw(5) << randomCost << "\n";
-			#endif
+	if ( manualInput ) {
+		for ( int i = 0 ; i < V ; i++ ) {
+			graph.weight[i][i] = INFINITY;
+			for ( int j = i+1 ; j < V ; j++ ) {
+				std::cout << std::setw(4) << i << "  " << std::setw(4) << j << "   " << "   ";
+				int cost;
+				std::cin >> cost;
+				graph.weight[i][j] = cost;
+				graph.weight[j][i] = cost;
+
+			}
+		}
+	} else {
+		for ( int i = 0 ; i < V ; i++ ) {
+			graph.weight[i][i] = INFINITY;
+			for ( int j = i+1 ; j < V ; j++ ) {
+				int randomCost = (rand() % MAXCOST) + 1;
+				graph.weight[i][j] = randomCost;
+				graph.weight[j][i] = randomCost;
+				#ifdef SHOWCOSTS
+				std::cout << std::setw(4) << i << "  " << std::setw(4) << j << "   " << std::setw(5) << randomCost << "\n";
+				#endif
+			}
 		}
 	}
 
@@ -84,8 +102,9 @@ int main(int argc, char **argv) {
 	std::cout << optimalPath.location[0] << "\n\t\tgives a length of "
 	          << optimalPath.length << "\n";
 
+
 	// Display run info
 
-	std::cout << "\n\nRun same test case again using: \n\"" << argv[0] << "\" " << V << " " << seed << "\n";
+	if ( !manualInput ) std::cout << "\n\nRun same test case again using: \n\"" << argv[0] << "\" " << V << " " << seed << "\n";
 
 }
