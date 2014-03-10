@@ -10,6 +10,8 @@
 #include "tspSolve.h"
 
 int main(int argc, char **argv) {
+	int startTime = time(NULL);
+	int endTime;
 	Graph graph;
 	OptimalPath optimalPath;
 	int V = DEFAULTV;
@@ -110,4 +112,9 @@ int main(int argc, char **argv) {
 
 	if ( !manualInput ) std::cout << "\n\nRun same test case again using: \n\"" << argv[0] << "\" " << V << " " << seed << "\n";
 
+	endTime = time(NULL);
+
+	#ifndef DONTSHOWTIME
+	std::cout << "\n\nRan in " << endTime - startTime << " seconds.";
+	#endif
 }

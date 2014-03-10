@@ -12,11 +12,11 @@
 namespace TSPSolve {
 	using namespace std;
 
+	Graph graph;
 	vector<int> bestPath;
 	int bestLength = INFINITY;
 
 	struct Node {
-		Graph state;
 		vector<int> path;
 		bool visited[MAXV]; // visited means inward path is not acceptable
 		int tourLength;
@@ -34,20 +34,20 @@ namespace TSPSolve {
 		void computeTourLength() {
 			tourLength = 0;
 			for ( int i = 1 ; i < path.size() ; i++ ) {
-				tourLength += state.weight[path[i-1]][path[i]];
+				tourLength += graph.weight[path[i-1]][path[i]];
 			}
-			for ( int i = 0 ; i < state.V ; i++ ) {
+			for ( int i = 0 ; i < graph.V ; i++ ) {
 				if ( !visited[i] ) {
-					int shortest = state.weight[i][0];
-					for ( int j = 0 ; j < state.V ; j++ ) {
-						shortest = min(shortest,state.weight[i][j]);
+					int shortest = graph.weight[i][0];
+					for ( int j = 0 ; j < graph.V ; j++ ) {
+						shortest = min(shortest,graph.weight[i][j]);
 					}
 					tourLength += shortest;
 				}
 			}
 		}
 	};
-	
+
 	bool operator < (const Node &n1, const Node &n2) { // reversed comparison to make priority_heap min_heap
 		if ( n1.tourLength < n2.tourLength ) return false;
 		if ( n1.tourLength == n2.tourLength && n1.path.size() > n2.path.size() ) return false;
@@ -55,9 +55,9 @@ namespace TSPSolve {
 	}
 
 	void tspSolve(Graph graph, OptimalPath &optimalPath) {
+		TSPSolve::graph = graph;
 		priority_queue<Node> validStates;
 		Node node;
-		node.state = graph;
 		node.computeTourLength();
 		validStates.push(node);
 
@@ -73,14 +73,14 @@ namespace TSPSolve {
 			}
 
 			// Found a new good path                                   // NOTE: Is this necessary?
-			if ( node.path.size() == node.state.V + 1 ) {
+			if ( node.path.size() == graph.V + 1 ) {
 				bestLength = node.tourLength;
 				bestPath = node.path;
 				continue;
 			}
 
 			// Separately need to complete the tour (because, otherwise, premature completion may occur
-			if ( node.path.size() == node.state.V ) {
+			if ( node.path.size() == graph.V ) {
 				Node completeTour = node;
 				completeTour.path.push_back(0);
 				completeTour.computeTourLength();
@@ -93,7 +93,7 @@ namespace TSPSolve {
 			}
 
 			// Generate new states
-			for ( int i = 0 ; i < node.state.V ; i++ ) {
+			for ( int i = 0 ; i < graph.V ; i++ ) {
 				if ( !node.visited[i] ) {
 					Node branchState = node;
 					branchState.path.push_back(i);
@@ -106,10 +106,10 @@ namespace TSPSolve {
 				}
 			}
 		}
-		
+
 		// May have TODO
-		
-			
+
+
 		for ( int i = 0 ; i < bestPath.size() ; i++ ) {
 			optimalPath.location[i] = bestPath[i];
 		}
