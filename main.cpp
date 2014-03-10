@@ -60,6 +60,7 @@ int main(int argc, char **argv) {
 	          << "-------------- ----\n\n";
 	#endif
 	for ( int i = 0 ; i < V ; i++ ) {
+		graph.weight[i][i] = INFINITY;
 		for ( int j = i+1 ; j < V ; j++ ) {
 			int randomCost = (rand() % MAXCOST) + 1;
 			graph.weight[i][j] = randomCost;
