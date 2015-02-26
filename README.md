@@ -18,3 +18,9 @@ It becomes useful to implement this using “best first” method of traversal o
 By pre calculating the shortest outgoing edge from each vertex, it becomes even more faster to calculate the lower bound on the partial tour.
 
 When no more state space nodes remain in the priority queue, the optimal tour has been found.
+
+
+License
+-------
+
+[MIT License](http://jay.mit-license.org/2013)
